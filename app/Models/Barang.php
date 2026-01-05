@@ -11,6 +11,12 @@ class Barang extends Model
         'type',
         'kode_barang',
         'kondisi',
+        'foto',
         'status'
     ];
+
+    public function peminjaman()
+    {
+        return $this->hasMany(Peminjaman::class);
+    }
 }

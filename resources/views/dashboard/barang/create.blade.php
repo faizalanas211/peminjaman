@@ -33,7 +33,7 @@
             </div>
 
             <div class="card-body pt-0">
-                <form action="{{ route('barang.store') }}" method="POST">
+                <form action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     {{-- NAMA BARANG --}}
@@ -76,6 +76,35 @@
                         @error('kode_barang')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+                    </div>
+
+                    {{-- FOTO BARANG (OPTIONAL) --}}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Foto Barang <span class="text-muted fw-normal">(opsional)</span>
+                        </label>
+
+                        <input type="file"
+                            name="foto"
+                            class="form-control @error('foto') is-invalid @enderror"
+                            accept="image/*"
+                            onchange="previewFoto(this)">
+
+                        <small class="text-muted">
+                            Format JPG/PNG • Maks 2 MB
+                        </small>
+
+                        @error('foto')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+
+                        {{-- PREVIEW --}}
+                        <div class="mt-3">
+                            <img id="preview-image"
+                                src=""
+                                class="img-thumbnail d-none"
+                                style="max-height: 200px;">
+                        </div>
                     </div>
 
                     {{-- KONDISI --}}
@@ -156,5 +185,25 @@
         </div>
     </div>
 </div>
+
+<script>
+    function previewFoto(input) {
+        const preview = document.getElementById('preview-image');
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                preview.src = e.target.result;
+                preview.classList.remove('d-none');
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        } else {
+            preview.src = '';
+            preview.classList.add('d-none');
+        }
+    }
+</script>
 
 @endsection

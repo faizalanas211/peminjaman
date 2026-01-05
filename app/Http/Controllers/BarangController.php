@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
 class BarangController extends Controller
@@ -14,7 +15,7 @@ class BarangController extends Controller
     public function index()
     {
         $barangs = Barang::orderBy('nama_barang', 'asc')
-            ->paginate(5); // paginate 5 data per halaman
+            ->paginate(25); // paginate 5 data per halaman
         return view('dashboard.barang.index', compact('barangs'));
     }
 
@@ -36,7 +37,16 @@ class BarangController extends Controller
             'type'        => 'required',
             'kode_barang' => 'required|unique:barangs,kode_barang',
             'kondisi'     => 'required',
+            'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $fotoPath = null;
+
+        // cek kalau user upload foto
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')
+                                ->store('barangs', 'public');
+        }
 
         Barang::create([
             'nama_barang' => $request->nama_barang,
@@ -44,6 +54,7 @@ class BarangController extends Controller
             'kode_barang' => $request->kode_barang,
             'kondisi'     => $request->kondisi,
             'status'      => 'tersedia',
+            'foto'        => $fotoPath, // nullable
         ]);
 
         return redirect()
@@ -113,14 +124,30 @@ class BarangController extends Controller
             'type'        => 'required',
             'kode_barang' => 'required|unique:barangs,kode_barang,' . $barang->id,
             'kondisi'     => 'required',
+            'foto'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
+        // update field utama
         $barang->update([
             'nama_barang' => $request->nama_barang,
             'type'        => $request->type,
             'kode_barang' => $request->kode_barang,
             'kondisi'     => $request->kondisi,
         ]);
+
+        // kalau upload foto baru
+        if ($request->hasFile('foto')) {
+
+            // hapus foto lama (kalau ada)
+            if ($barang->foto && Storage::disk('public')->exists($barang->foto)) {
+                Storage::disk('public')->delete($barang->foto);
+            }
+
+            // simpan foto baru
+            $barang->update([
+                'foto' => $request->file('foto')->store('barangs', 'public'),
+            ]);
+        }
 
         return redirect()
             ->route('barang.index')
@@ -132,6 +159,11 @@ class BarangController extends Controller
      */
     public function destroy(Barang $barang)
     {
+        // hapus foto dari storage
+        if ($barang->foto && Storage::disk('public')->exists($barang->foto)) {
+            Storage::disk('public')->delete($barang->foto);
+        }
+
         $barang->delete();
         return back()->with('success', 'Barang berhasil dihapus');
     }

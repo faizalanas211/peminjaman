@@ -23,7 +23,7 @@ class PeminjamanController extends Controller
             ->whereMonth('tanggal_pinjam', $bulan)
             ->whereYear('tanggal_pinjam', $tahun)
             ->latest()
-            ->paginate(5); // <-- PAGINATE
+            ->paginate(25); // <-- PAGINATE
 
         // summary menggunakan query terpisah agar akurat (tidak terbatas halaman)
         $total = Peminjaman::whereMonth('tanggal_pinjam', $bulan)
