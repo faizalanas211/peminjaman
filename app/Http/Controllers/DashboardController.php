@@ -41,7 +41,7 @@ class DashboardController extends Controller
         $totalBarang = Barang::count();
         $barangTersedia = Barang::where('status', 'tersedia')->count();
         $barangDipinjam = Barang::where('status', 'dipinjam')->count();
-        $barangRusak = Barang::where('status', 'rusak')->count();
+        $barangRusak = Barang::where('kondisi', 'perlu servis')->count();
         
         // Persentase
         $persentaseTersedia = $totalBarang > 0 ? round(($barangTersedia / $totalBarang) * 100) : 0;
@@ -73,6 +73,15 @@ class DashboardController extends Controller
                             ->count()
             ];
         }
+
+        // Statistik per tipe barang
+        $statPerType = Barang::select(
+                'type',
+                DB::raw("SUM(CASE WHEN status = 'tersedia' THEN 1 ELSE 0 END) as tersedia"),
+                DB::raw("SUM(CASE WHEN status = 'dipinjam' THEN 1 ELSE 0 END) as dipinjam")
+            )
+            ->groupBy('type')
+            ->get();
         
         return view('dashboard.main', compact(
             'totalBarang',
@@ -83,7 +92,8 @@ class DashboardController extends Controller
             'persentaseDipinjam',
             'persentaseRusak',
             'peminjamanAktif',
-            'dataBarang'
+            'dataBarang',
+            'statPerType'
         ));
     }
 }
