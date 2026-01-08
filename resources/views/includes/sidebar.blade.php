@@ -1,7 +1,7 @@
 <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
     <div class="app-brand demo">
         <a href="index.html" class="app-brand-link">
-            <span class="app-brand-text demo menu-text fw-bolder ms-2">Inventaris</span>
+            <span class="app-brand-text demo menu-text fw-bolder ms-2">Persediaan</span>
         </a>
 
         <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
@@ -61,7 +61,7 @@
             <li class="menu-item {{ Request::is('dashboard/peminjaman*') ? 'active' : '' }}">
                 <a href="{{ route('peminjaman.index') }}" class="menu-link">
                     <i class="menu-icon tf-icons bx bx-calendar-edit"></i>
-                    <div data-i18n="Analytics">Daftar Peminjam</div>
+                    <div data-i18n="Analytics">Riwayat Penggunaan</div>
                 </a>
             </li>
 

@@ -2,7 +2,7 @@
 
 @section('breadcrumb')
 <li class="breadcrumb-item active text-primary fw-semibold">
-    Dashboard Peminjaman Barang
+    Dashboard Persediaan Barang
 </li>
 @endsection
 
@@ -10,23 +10,24 @@
 
 <div class="card card-flush shadow-sm rounded-4 mb-4">
 
-    {{-- HEADER --}}
+    {{-- ================= HEADER ================= --}}
     <div class="card-header border-0 pt-6 pb-4">
-        <h3 class="fw-bold mb-1">Dashboard Peminjaman Barang</h3>
-        <p class="text-muted mb-0 fs-7">Monitoring ketersediaan barang</p>
+        <h3 class="fw-bold mb-1">Dashboard Persediaan Barang</h3>
+        <p class="text-muted mb-0 fs-7">
+            Monitoring jumlah stok barang inventaris
+        </p>
     </div>
 
     <div class="card-body pt-0">
-
-
-      
 
         {{-- ================= CHART ================= --}}
         <div class="row">
             <div class="col-12">
                 <div class="chart-card">
-                    <h5 class="fw-semibold mb-3">Statistik Ketersediaan Barang</h5>
-                    <canvas id="barangChart" height="110"></canvas>
+                    <h5 class="fw-semibold mb-3">
+                        Statistik Stok Barang
+                    </h5>
+                    <canvas id="persediaanChart" height="120"></canvas>
                 </div>
             </div>
         </div>
@@ -36,33 +37,6 @@
 
 {{-- ================= STYLE ================= --}}
 <style>
-.inventory-card{
-    background:#ffffff;
-    border-radius:20px;
-    padding:22px;
-    height:100%;
-    box-shadow:0 8px 22px rgba(0,0,0,.06);
-    border:1px solid #eef0f4;
-}
-.inventory-card h6{
-    font-size:14px;
-    font-weight:600;
-    color:#6b7280;
-}
-.inventory-card h2{
-    font-size:36px;
-    font-weight:700;
-    margin:6px 0 14px;
-    color:#111827;
-}
-.progress{
-    height:8px;
-    background:#e5e7eb;
-    border-radius:6px;
-}
-.progress-bar{
-    background:#4f46e5;
-}
 .chart-card{
     background:#ffffff;
     border-radius:20px;
@@ -76,13 +50,14 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-const ctx = document.getElementById('barangChart');
+const ctx = document.getElementById('persediaanChart');
 
+// Data dari Controller
 const dataBarang = @json($dataBarang);
 
+// Ambil label dan nilai stok
 const labels = Object.keys(dataBarang);
-const tersedia = labels.map(l => dataBarang[l].ready);
-const dipinjam = labels.map(l => dataBarang[l].dipinjam);
+const stok = labels.map(label => dataBarang[label].ready);
 
 new Chart(ctx, {
     type: 'bar',
@@ -90,20 +65,15 @@ new Chart(ctx, {
         labels: labels,
         datasets: [
             {
-                label: 'Tersedia',
-                data: tersedia,
+                label: 'Stok Tersedia',
+                data: stok,
                 backgroundColor: '#4f46e5',
-                borderRadius: 8
-            },
-            {
-                label: 'Dipinjam',
-                data: dipinjam,
-                backgroundColor: '#f59e0b',
                 borderRadius: 8
             }
         ]
     },
     options: {
+        indexAxis: 'y', // 👉 Horizontal
         responsive: true,
         plugins: {
             legend: {
@@ -111,10 +81,17 @@ new Chart(ctx, {
             }
         },
         scales: {
-            y: {
+            x: {
                 beginAtZero: true,
-                ticks: {
-                    stepSize: 1
+                title: {
+                    display: true,
+                    text: 'Jumlah Barang'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Jenis Barang'
                 }
             }
         }

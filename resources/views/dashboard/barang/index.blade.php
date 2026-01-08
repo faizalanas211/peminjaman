@@ -42,7 +42,6 @@
                         <th>Type</th>
                         <th>Kode Barang</th>
                         <th>Kondisi</th>
-                        <th>Status</th>
                         <th width="12%" class="text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -57,16 +56,6 @@
                             <td>{{ $barang->kode_barang }}</td>
                             <td>{{ $barang->kondisi }}</td>
 
-                            <td>
-                                @if ($barang->status === 'tersedia')
-                                    <span class="badge bg-success">Tersedia</span>
-                                @elseif ($barang->status === 'dipinjam')
-                                    <span class="badge bg-warning text-dark">Dipinjam</span>
-                                @else
-                                    <span class="badge bg-danger">Rusak</span>
-                                @endif
-                            </td>
-
                             {{-- ===== AKSI ===== --}}
                             <td class="text-center">
                                 <div class="d-inline-flex align-items-center gap-1">
@@ -77,6 +66,7 @@
                                        title="Edit Barang">
                                         <i class="bx bx-edit"></i>
                                     </a>
+
                                     {{-- DELETE --}}
                                     <form action="{{ route('barang.destroy', $barang->id) }}"
                                           method="POST"
@@ -96,7 +86,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center text-muted py-4">
+                            <td colspan="6" class="text-center text-muted py-4">
                                 Belum ada data barang
                             </td>
                         </tr>
@@ -112,7 +102,6 @@
             </div>
 
             <div>
-                {{-- Custom pagination ±1 angka --}}
                 @if ($barangs->hasPages())
                 <nav>
                     <ul class="pagination mb-0">
@@ -121,11 +110,16 @@
                         @if ($barangs->onFirstPage())
                             <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
                         @else
-                            <li class="page-item"><a class="page-link" href="{{ $barangs->previousPageUrl() }}">&laquo;</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $barangs->previousPageUrl() }}">&laquo;</a>
+                            </li>
                         @endif
 
-                        {{-- Halaman sekitar current ±1 --}}
-                        @foreach ($barangs->getUrlRange(max($barangs->currentPage()-1,1), min($barangs->currentPage()+1, $barangs->lastPage())) as $page => $url)
+                        {{-- Page ±1 --}}
+                        @foreach ($barangs->getUrlRange(
+                            max($barangs->currentPage()-1,1),
+                            min($barangs->currentPage()+1, $barangs->lastPage())
+                        ) as $page => $url)
                             @if ($page == $barangs->currentPage())
                                 <li class="page-item active"><span class="page-link">{{ $page }}</span></li>
                             @else
@@ -135,7 +129,9 @@
 
                         {{-- Next --}}
                         @if ($barangs->hasMorePages())
-                            <li class="page-item"><a class="page-link" href="{{ $barangs->nextPageUrl() }}">&raquo;</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $barangs->nextPageUrl() }}">&raquo;</a>
+                            </li>
                         @else
                             <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
                         @endif

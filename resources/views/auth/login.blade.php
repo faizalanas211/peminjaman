@@ -3,10 +3,10 @@
     <!-- Logo -->
     <div class="app-brand justify-content-center">
         <a href="#" class="app-brand-link gap-2">
-            <span class="app-brand-text text-body fw-bolder">Sistem Kepegawaian</span>
+            <span class="app-brand-text text-body fw-bolder">Sistem Persedian</span>
         </a>
     </div>
-    
+
     @if(session('success'))
     <div id="flash-success"
         class="alert alert-success position-fixed top-0 start-50 translate-middle-x mt-3 px-4 py-2 shadow"
@@ -19,10 +19,10 @@
         setTimeout(function() {
             const alertBox = document.getElementById('flash-success');
             if (alertBox) {
-                alertBox.style.opacity = "0";  
-                setTimeout(() => alertBox.remove(), 600); 
+                alertBox.style.opacity = "0";
+                setTimeout(() => alertBox.remove(), 600);
             }
-        }, 2500); 
+        }, 2500);
     </script>
     @endif
 
@@ -38,10 +38,10 @@
         setTimeout(function() {
             const alertBox = document.getElementById('flash-error');
             if (alertBox) {
-                alertBox.style.opacity = "0";   
-                setTimeout(() => alertBox.remove(), 600); 
+                alertBox.style.opacity = "0";
+                setTimeout(() => alertBox.remove(), 600);
             }
-        }, 2500); 
+        }, 2500);
     </script>
     @endif
 
@@ -51,7 +51,7 @@
     <form id="formAuthentication" class="mb-3" action="{{ route('loginAction') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="email" class="form-label">Email atau NIP</label>
+            <label for="email" class="form-label">Username</label>
             <input type="text" class="form-control" id="email" name="login" autofocus autocomplete="off" />
         </div>
         <div class="mb-3 form-password-toggle">

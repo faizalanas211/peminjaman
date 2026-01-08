@@ -2,10 +2,12 @@
 
 @section('breadcrumb')
 <li class="breadcrumb-item">
-    <a href="{{ route('peminjaman.index') }}" class="text-decoration-none">Peminjaman</a>
+    <a href="{{ route('peminjaman.index') }}" class="text-decoration-none">
+        Riwayat Penggunaan Barang
+    </a>
 </li>
 <li class="breadcrumb-item active text-primary fw-semibold">
-    Detail Peminjaman
+    Detail Penggunaan
 </li>
 @endsection
 
@@ -13,11 +15,13 @@
 
 <div class="card card-flush shadow-sm rounded-4">
 
-    {{-- HEADER --}}
+    {{-- ================= HEADER ================= --}}
     <div class="card-header border-0 pt-6 pb-4 d-flex justify-content-between align-items-center">
         <div>
-            <h3 class="fw-bold mb-1">Detail Peminjaman</h3>
-            <p class="text-muted mb-0 fs-7">Informasi lengkap peminjaman barang</p>
+            <h3 class="fw-bold mb-1">Detail Penggunaan Barang</h3>
+            <p class="text-muted mb-0 fs-7">
+                Informasi lengkap penggunaan barang inventaris
+            </p>
         </div>
         <a href="{{ route('peminjaman.index') }}" class="btn btn-light">
             <i class="bx bx-arrow-back me-1"></i> Kembali
@@ -28,26 +32,33 @@
 
         <div class="row g-4">
 
-            {{-- DATA PEMINJAM --}}
+            {{-- DATA PENGGUNA + WAKTU --}}
             <div class="col-md-6">
                 <div class="info-card">
-                    <h6 class="section-title">Data Peminjam</h6>
+                    <h6 class="section-title">Data Pengguna</h6>
 
                     <div class="info-row">
-                        <span>Nama Peminjam</span>
+                        <span>Nama Pengguna</span>
                         <strong>{{ $peminjaman->nama_peminjam }}</strong>
                     </div>
 
                     <div class="info-row">
-                        <span>Bagian</span>
+                        <span>Bagian / Unit</span>
                         <strong>{{ $peminjaman->kelas }}</strong>
                     </div>
 
+                    <hr class="my-3">
+
                     <div class="info-row">
-                        <span>Status</span>
-                        <span class="badge {{ $peminjaman->status == 'dipinjam' ? 'bg-warning text-dark' : 'bg-success' }}">
-                            {{ ucfirst($peminjaman->status) }}
-                        </span>
+                        <span>Tanggal Penggunaan</span>
+                        <strong>
+                            {{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->translatedFormat('d F Y') }}
+                        </strong>
+                    </div>
+
+                    <div class="info-row">
+                        <span>Keterangan</span>
+                        <strong>{{ $peminjaman->keterangan ?? '-' }}</strong>
                     </div>
                 </div>
             </div>
@@ -63,7 +74,7 @@
                     </div>
 
                     <div class="info-row">
-                        <span>Type</span>
+                        <span>Jenis / Type</span>
                         <strong>{{ $peminjaman->barang->type }}</strong>
                     </div>
 
@@ -73,38 +84,8 @@
                     </div>
 
                     <div class="info-row">
-                        <span>Kondisi</span>
+                        <span>Kondisi Barang</span>
                         <strong>{{ $peminjaman->barang->kondisi }}</strong>
-                    </div>
-                </div>
-            </div>
-
-            {{-- WAKTU PEMINJAMAN --}}
-            <div class="col-md-12">
-                <div class="info-card">
-                    <h6 class="section-title">Waktu Peminjaman</h6>
-
-                    <div class="row">
-                        <div class="col-md-4 info-row">
-                            <span>Tanggal Pinjam</span>
-                            <strong>
-                                {{ \Carbon\Carbon::parse($peminjaman->tanggal_pinjam)->translatedFormat('d F Y') }}
-                            </strong>
-                        </div>
-
-                        <div class="col-md-4 info-row">
-                            <span>Tanggal Kembali</span>
-                            <strong>
-                                {{ $peminjaman->tanggal_kembali
-                                    ? \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->translatedFormat('d F Y')
-                                    : '-' }}
-                            </strong>
-                        </div>
-
-                        <div class="col-md-4 info-row">
-                            <span>Keterangan</span>
-                            <strong>{{ $peminjaman->keterangan ?? '-' }}</strong>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -112,17 +93,7 @@
         </div>
 
         {{-- AKSI --}}
-        <div class="d-flex justify-content-end mt-4 gap-2">
-            @if($peminjaman->status === 'dipinjam')
-                <form action="{{ route('peminjaman.kembalikan', $peminjaman->id) }}" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <button class="btn btn-success"
-                        onclick="return confirm('Yakin barang sudah dikembalikan?')">
-                        <i class="bx bx-check me-1"></i> Tandai Dikembalikan
-                    </button>
-                </form>
-            @endif
+        <div class="d-flex justify-content-end mt-4">
             <a href="{{ route('peminjaman.index') }}" class="btn btn-outline-secondary">
                 Tutup
             </a>
@@ -131,10 +102,10 @@
     </div>
 </div>
 
-{{-- STYLE --}}
+{{-- ================= STYLE ================= --}}
 <style>
 .info-card{
-    background:#fff;
+    background:#ffffff;
     border-radius:18px;
     padding:20px;
     box-shadow:0 4px 12px rgba(0,0,0,.05);

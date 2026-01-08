@@ -14,7 +14,7 @@ class BarangController extends Controller
     public function index()
     {
         $barangs = Barang::orderBy('nama_barang', 'asc')
-            ->paginate(5); // paginate 5 data per halaman
+            ->paginate(10); // paginate 5 data per halaman
         return view('dashboard.barang.index', compact('barangs'));
     }
 
